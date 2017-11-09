@@ -71,12 +71,14 @@ lazy val `squbs-admin` = project dependsOn (`squbs-unicomplex`, `squbs-testkit` 
 
 lazy val `squbs-ext` = project dependsOn `squbs-pipeline` % "provided"
 
+credentials += Credentials("Sonatype Nexus Repository Manager", "n.xchanger.cn", "admin", "admin123")
+
 publishTo in ThisBuild := {
-  val nexus = "https://oss.sonatype.org/"
+  val nexus = "http://n.xchanger.cn/nexus/content/repositories/"
   if (version.value.trim.endsWith("SNAPSHOT"))
-    Some("snapshots" at nexus + "content/repositories/snapshots")
+    Some("snapshots" at nexus + "snapshots")
   else
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    Some("releases" at nexus + "releases")
 }
 
 publishMavenStyle in ThisBuild := true
@@ -85,7 +87,11 @@ publishArtifact in Test := false
 
 pomIncludeRepository in ThisBuild := { _ => false }
 
-pomExtra in ThisBuild :=
+checksums in publishLocal := Nil
+
+checksums in publish := Nil
+
+/*pomExtra in ThisBuild :=
   <url>https://github.com/paypal/squbs</url>
     <licenses>
       <license>
@@ -114,4 +120,4 @@ pomExtra in ThisBuild :=
         <name>Anil Gursel</name>
         <url>https://github.com/anilgursel</url>
       </developer>
-    </developers>
+    </developers>*/

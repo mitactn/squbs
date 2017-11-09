@@ -6,13 +6,10 @@ javaOptions in Test += "-Xmx512m"
 
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-  "org.scalatest" %% "scalatest" % scalatestV % "test->*",
+  "org.scalatest" %% "scalatest" % scalatestV % "test",
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV,
   "ch.qos.logback" % "logback-classic" % "1.1.3" % "test",
-  "com.wix" %% "accord-core" % accordV % "test"
-) ++ akka
-
-def akka = Seq(
+  "com.wix" %% "accord-core" % accordV % "test",
   "com.typesafe.akka" %% "akka-actor" % akkaV,
   "com.typesafe.akka" %% "akka-agent" % akkaV,
   "com.typesafe.akka" %% "akka-http" % akkaHttpV,

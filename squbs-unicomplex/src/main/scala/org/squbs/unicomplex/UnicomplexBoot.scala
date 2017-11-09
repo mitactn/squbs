@@ -286,6 +286,8 @@ object UnicomplexBoot extends LazyLogging {
     val cubeSupervisor = actorSystem.actorOf(Props[CubeSupervisor], name)
     Unicomplex(actorSystem).uniActor ! CubeRegistration(cube.info, cubeSupervisor)
 
+    val cubeConfigInfo = actorSystem.settings.config.getOptionalConfig(name).getOrElse(actorSystem.settings.config)
+
     def startActor(actorConfig: Config): Option[(String, String, String, Class[_])] = {
       val className = actorConfig getString "class-name"
       val name = actorConfig.get[String]("name", className substring (className.lastIndexOf('.') + 1))
@@ -297,7 +299,12 @@ object UnicomplexBoot extends LazyLogging {
         clazz asSubclass classOf[Actor]
 
         // Create and the props for this actor to be started, optionally enabling the router.
-        val props = if (withRouter) Props(clazz) withRouter FromConfig() else Props(clazz)
+        val props =
+          if (withRouter) {
+            (if (clazz.isAnnotationPresent(classOf[InjectConfig])) Props(clazz, name, cubeConfigInfo) else Props(clazz)) withRouter FromConfig()
+          } else {
+            if (clazz.isAnnotationPresent(classOf[InjectConfig])) Props(clazz, name, cubeConfigInfo) else Props(clazz)
+          }
 
         // Send the props to be started by the cube.
         cubeSupervisor ! StartCubeActor(props, name, initRequired)

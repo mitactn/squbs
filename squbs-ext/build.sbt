@@ -26,5 +26,5 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream-testkit" % akkaV % "test",
   "junit" % "junit" % junitV % "test",
   "com.novocode" % "junit-interface" % junitInterfaceV % "test->default",
-  "org.scalatest" %% "scalatest" % scalatestV % "test->*"
+  "org.scalatest" %% "scalatest" % scalatestV % "test"
 )

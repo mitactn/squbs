@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV,
   "net.openhft" % "chronicle-queue" % "4.5.13" % "optional",
-  "org.scalatest" %% "scalatest" % scalatestV % "test->*",
+  "org.scalatest" %% "scalatest" % scalatestV % "test",
   "junit" % "junit" % junitV % "test",
   "org.apache.commons" % "commons-math3" % "3.3" % "test->*",
   "com.novocode" % "junit-interface" % junitInterfaceV % "test->default",
@@ -22,10 +22,7 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-jackson" % json4sV % "optional",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.4" % "optional",
   "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonV % "optional",
-  "ch.qos.logback" % "logback-classic" % "1.1.3" % "test"
-) ++ akkaDependencies
-
-def akkaDependencies = Seq(
+  "ch.qos.logback" % "logback-classic" % "1.1.3" % "test",
   "com.typesafe.akka" %% "akka-actor" % akkaV,
   "com.typesafe.akka" %% "akka-agent" % akkaV,
   "com.typesafe.akka" %% "akka-stream" % akkaV,
