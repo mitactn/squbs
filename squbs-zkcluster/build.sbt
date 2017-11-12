@@ -4,10 +4,12 @@ name := "squbs-zkcluster"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaV,
-  "com.typesafe.akka" %% "akka-remote" % akkaV,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaV,
-  "org.apache.curator" % "curator-recipes" % "3.0.0" exclude("log4j", "log4j"),
-  "org.apache.curator" % "curator-framework" % "3.0.0" exclude("org.jboss.netty", "netty") exclude("log4j", "log4j"),
+  "com.typesafe.akka" %% "akka-remote" % akkaV exclude("com.typesafe","config"),
+  "com.typesafe.akka" %% "akka-slf4j" % akkaV exclude("org.slf4j","slf4j-api"),
+  "org.apache.curator" % "curator-recipes" % "3.0.0" exclude("log4j", "log4j") exclude("org.slf4j","slf4j-api") exclude("io.netty","netty"),
+  "org.apache.curator" % "curator-framework" % "3.0.0"
+    exclude("org.jboss.netty", "netty") exclude("log4j", "log4j")
+    exclude("org.slf4j","slf4j-api") exclude("io.netty","netty"),
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV,
   "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
   "org.scalatest" %% "scalatest" % scalatestV % "test",
@@ -21,5 +23,3 @@ libraryDependencies ++= Seq(
 parallelExecution := false
 
 cleanFiles += baseDirectory.value / "zookeeper"
-
-updateOptions := updateOptions.value.withCachedResolution(true)

@@ -12,11 +12,11 @@ libraryDependencies ++= Seq(
   "com.wix" %% "accord-core" % accordV % "test",
   "com.typesafe.akka" %% "akka-actor" % akkaV,
   "com.typesafe.akka" %% "akka-agent" % akkaV,
-  "com.typesafe.akka" %% "akka-http" % akkaHttpV,
+  "com.typesafe.akka" %% "akka-http" % akkaHttpV
+    exclude("com.typesafe.akka","akka-stream_2.12") exclude("com.typesafe.akka","akka-actor_2.12")
+    exclude("com.typesafe","config"),
   "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
   "com.typesafe.akka" %% "akka-stream-testkit" % akkaV % "test"
 )
 
 (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/squbs-unicomplex")
-
-updateOptions := updateOptions.value.withCachedResolution(true)

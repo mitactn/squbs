@@ -11,7 +11,7 @@ testOptions in Test ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "io.dropwizard.metrics" % "metrics-core" % metricsV,
+  "io.dropwizard.metrics" % "metrics-core" % metricsV exclude("org.slf4j","slf4j-api"),
   "com.typesafe.akka" %% "akka-stream" % akkaV % "optional",
   "com.typesafe.akka" %% "akka-http-core" % akkaHttpV % "optional",
   "de.heikoseeberger" %% "akka-http-json4s" % heikoseebergerAkkaHttpJsonV % "optional",
@@ -26,5 +26,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream-testkit" % akkaV % "test",
   "junit" % "junit" % junitV % "test",
   "com.novocode" % "junit-interface" % junitInterfaceV % "test->default",
-  "org.scalatest" %% "scalatest" % scalatestV % "test"
+  "org.scalatest" %% "scalatest" % scalatestV % "test",
+  "org.testng" % "testng" % testngV % "test"
 )

@@ -21,8 +21,6 @@ testOptions in Test ++= Seq(
   Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/unicomplex")
 )
 
-updateOptions := updateOptions.value.withCachedResolution(true)
-
 javacOptions ++= Seq("-Xlint:unchecked")
 
 scalacOptions ++= Seq("-feature")

@@ -6,7 +6,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % scalatestV % "test",
   "com.typesafe.akka" %% "akka-actor" % akkaV,
   "com.typesafe.akka" %% "akka-agent" % akkaV,
-  "com.typesafe.akka" %% "akka-stream" % akkaV,
+  "com.typesafe.akka" %% "akka-stream" % akkaV exclude("com.typesafe","config"),
   "com.typesafe.akka" %% "akka-http-core" % akkaHttpV % "provided",
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV,
   "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
@@ -14,5 +14,3 @@ libraryDependencies ++= Seq(
 )
 
 (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/squbs-pipeline")
-
-updateOptions := updateOptions.value.withCachedResolution(true)

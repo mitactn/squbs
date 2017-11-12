@@ -301,9 +301,9 @@ object UnicomplexBoot extends LazyLogging {
         // Create and the props for this actor to be started, optionally enabling the router.
         val props =
           if (withRouter) {
-            (if (clazz.isAnnotationPresent(classOf[InjectConfig])) Props(clazz, name, cubeConfigInfo) else Props(clazz)) withRouter FromConfig()
+            (if (clazz.isAnnotationPresent(classOf[InjectConfig])) Props(clazz, cube.info.name, cubeConfigInfo) else Props(clazz)) withRouter FromConfig()
           } else {
-            if (clazz.isAnnotationPresent(classOf[InjectConfig])) Props(clazz, name, cubeConfigInfo) else Props(clazz)
+            if (clazz.isAnnotationPresent(classOf[InjectConfig])) Props(clazz, cube.info.name, cubeConfigInfo) else Props(clazz)
           }
 
         // Send the props to be started by the cube.

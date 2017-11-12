@@ -14,6 +14,4 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.3" % "test"
 )
 
-updateOptions := updateOptions.value.withCachedResolution(true)
-
 (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/unicomplex")

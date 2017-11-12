@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.3" % "test",
   "com.typesafe.akka" %% "akka-actor" % akkaV,
   "com.typesafe.akka" %% "akka-agent" % akkaV,
-  "com.typesafe.akka" %% "akka-stream" % akkaV,
+  "com.typesafe.akka" %% "akka-stream" % akkaV exclude("com.typesafe","config"),
   "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
   "com.typesafe.akka" %% "akka-contrib" % akkaV % "optional",
   "com.typesafe.akka" %% "akka-http" % akkaHttpV % "optional",
@@ -36,7 +36,3 @@ libraryDependencies ++= Seq(
 // : Seq[sbt.Def.Setting[_]] in the line below is not required for a successful build
 // however, it is added due to an intelliJ warning
 Boilerplate.settings : Seq[sbt.Def.Setting[_]]
-
-// (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/squbs-pattern")
-
-updateOptions := updateOptions.value.withCachedResolution(true)

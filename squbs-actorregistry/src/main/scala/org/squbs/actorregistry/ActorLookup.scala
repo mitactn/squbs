@@ -34,7 +34,11 @@ object ActorLookup {
    */
   def apply[T: ClassTag] = {
     val responseClass = implicitly[ClassTag[T]].runtimeClass
-    new ActorLookup(responseClass = responseClass, explicitType = responseClass != classOf[Any])
+    if(responseClass.getTypeName.equals("scala.runtime.Nothing$")){
+      new ActorLookup(responseClass = classOf[Any], explicitType = false)
+    }else{
+      new ActorLookup(responseClass = responseClass, explicitType = responseClass != classOf[Any])
+    }
   }
 
   /**
@@ -44,8 +48,13 @@ object ActorLookup {
    */
   def apply[T: ClassTag](actorName: String) = {
     val responseClass = implicitly[ClassTag[T]].runtimeClass
-    new ActorLookup(responseClass = responseClass, actorName=Some(actorName),
-      explicitType = responseClass != classOf[Any])
+    if(responseClass.getTypeName.equals("scala.runtime.Nothing$")){
+      new ActorLookup(responseClass = classOf[Any], actorName=Some(actorName),
+        explicitType = false)
+    }else{
+      new ActorLookup(responseClass = responseClass, actorName=Some(actorName),
+        explicitType = responseClass != classOf[Any])
+    }
   }
 
   def apply() = new ActorLookup(classOf[Any], None, None, explicitType = false)

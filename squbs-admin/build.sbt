@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % scalatestV % "test",
   "com.typesafe.akka" %% "akka-actor" % akkaV,
   "com.typesafe.akka" %% "akka-agent" % akkaV,
-  "com.typesafe.akka" %% "akka-http" % akkaHttpV,
+  "com.typesafe.akka" %% "akka-http" % akkaHttpV excludeAll( ExclusionRule(organization = "com.typesafe.akka")),
   "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % "test",
   "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV,
   "com.typesafe.akka" %% "akka-testkit" % akkaV % "test",
@@ -20,7 +20,5 @@ libraryDependencies ++= Seq(
 )
 
 (testOptions in Test) += Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/squbs-unicomplex")
-
-updateOptions := updateOptions.value.withCachedResolution(true)
 
 mainClass in (Compile, run) := Some("org.squbs.unicomplex.Bootstrap")

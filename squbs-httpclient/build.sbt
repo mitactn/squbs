@@ -6,9 +6,11 @@ javaOptions in Test += "-Xmx512m"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka"         %% "akka-actor"                   % akkaV,
-  "com.typesafe.akka"         %% "akka-slf4j"                   % akkaV,
-  "com.typesafe.akka"         %% "akka-stream"                  % akkaV,
-  "com.typesafe.akka"         %% "akka-http-core"               % akkaHttpV ,
+  "com.typesafe.akka"         %% "akka-slf4j"                   % akkaV exclude("org.slf4j","slf4j-api") exclude("com.typesafe","config"),
+  "com.typesafe.akka"         %% "akka-stream"                  % akkaV exclude("com.typesafe","config"),
+  "com.typesafe.akka"         %% "akka-http-core"               % akkaHttpV
+    exclude("com.typesafe.akka","akka-stream_2.12") exclude("com.typesafe.akka","akka-actor_2.12")
+    exclude("com.typesafe","config"),
   "com.typesafe.scala-logging" %% "scala-logging" 			      	% scalaLoggingV,
   "org.scalatest"             %% "scalatest"                    % scalatestV % "test",
   "com.typesafe.akka"         %% "akka-testkit"                 % akkaV % "test",
@@ -27,5 +29,3 @@ testOptions in Test ++= Seq(
   Tests.Argument(TestFrameworks.ScalaTest, "-h", "report/squbs-httpclient"),
   Tests.Argument(TestFrameworks.JUnit, "-v", "-a")
 )
-
-updateOptions := updateOptions.value.withCachedResolution(true)
