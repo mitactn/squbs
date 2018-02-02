@@ -56,6 +56,8 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
   private[this] implicit val log = logger
   private[cluster] var whenZkClientUpdated = Seq.empty[ActorRef]
   private[cluster] var whenPartitionUpdated = Set.empty[ActorRef]
+  private[cluster] var whenZkLeaderUpdated = Set.empty[ActorRef]
+  private[cluster] var whenMemberUpdated = Set.empty[ActorRef]
 
   //begin the process of electing a leader
   private val zkMembershipMonitor =
@@ -85,6 +87,22 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
     case Event(ZkStopMonitorPartition, _) =>
       log.info("[follower/leader] stop monitor partitioning from:{}", sender().path)
       whenPartitionUpdated -= sender
+      stay()
+    case Event(ZkMonitorLeader, _) =>
+      log.info("[leader update] monitor from:{}", sender().path)
+      whenZkLeaderUpdated += sender
+      stay()
+    case Event(ZkStopMonitorLeader, _) =>
+      log.info("[leader update] stop monitor from:{}", sender().path)
+      whenZkLeaderUpdated -= sender()
+      stay()
+    case Event(ZkMonitorMember, _) =>
+      log.info("[member update] monitor from:{}", sender().path)
+      whenMemberUpdated += sender
+      stay()
+    case Event(ZkStopMonitorMember, _) =>
+      log.info("[member update] stop monitor from:{}", sender().path)
+      whenMemberUpdated -= sender
       stay()
     case Event(ZkListPartitions(member), zkClusterData) =>
       sender() ! ZkPartitions(zkClusterData.partitions.collect{
@@ -126,6 +144,7 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
 
   when(ZkClusterUninitialized)(mandatory orElse {
     case Event(ZkLeaderElected(Some(address)), zkClusterData) =>
+      whenZkLeaderUpdated foreach(_ ! ZkLeadership(address))
       log.info("[uninitialized] leader elected:{} and my zk address:{}", address, zkAddress)
       val partitions = zkClusterData.curatorFwk map {implicit fwk =>
         ZkPartitionsManager.loadPartitions()
@@ -137,6 +156,7 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
         goto(ZkClusterActiveAsFollower) using zkClusterData.copy(leader = Some(address), partitions = partitions)
       }
     case Event(ZkMembersChanged(members), zkClusterData) =>
+      whenMemberUpdated foreach (_ ! ZkMembership(members))
       log.info("[uninitialized] membership updated:{}", members)
       stay using zkClusterData.copy(members = members)
     case Event(_, _) =>
@@ -146,6 +166,7 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
 
   when(ZkClusterActiveAsFollower)(mandatory orElse {
     case Event(ZkLeaderElected(Some(address)), zkClusterData) =>
+      whenZkLeaderUpdated foreach(_ ! ZkLeadership(address))
       if(address.hostPort == zkAddress.hostPort) {
         // in case of leader dies before follower get the whole picture of partitions
         // the follower get elected need to read from Zookeeper
@@ -162,6 +183,7 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
       zkClusterData.leader.foreach(address => sender() ! ZkLeadership(address))
       stay()
     case Event(ZkMembersChanged(members), zkClusterData) =>
+      whenMemberUpdated foreach (_ ! ZkMembership(members))
       log.info("[follower] membership updated:{}", members)
       stay using zkClusterData.copy(members = members)
     case Event(origin @ ZkQueryPartition(partitionKey, notification, sizeOpt, props, members), zkClusterData) =>
@@ -225,6 +247,7 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
 
   when(ZkClusterActiveAsLeader)(mandatory orElse {
     case Event(ZkLeaderElected(Some(address)), zkClusterData) =>
+      whenZkLeaderUpdated foreach(_ ! ZkLeadership(address))
       if (address.hostPort == zkAddress.hostPort) {
         stay()
       } else {
@@ -235,6 +258,7 @@ class ZkClusterActor extends FSM[ZkClusterState, ZkClusterData] with Stash with 
       zkClusterData.leader.foreach(address => sender() ! ZkLeadership(address))
       stay()
     case Event(ZkMembersChanged(members), zkClusterData) =>
+      whenMemberUpdated foreach (_ ! ZkMembership(members))
       log.info("[leader] membership updated:{}", members)
       if(zkClusterData.members == members){
         //corner case, in which members weren't really changed, avoid redundant re-balances

@@ -117,6 +117,24 @@ case class ZkListPartitions(address: Address)
 case class ZkPartitions(partitionKeys:Seq[ByteString])
 
 /**
+  * subscribe to leader updates
+  */
+case object ZkMonitorLeader
+/**
+  * stop subscription to a leader's updates
+  */
+case object ZkStopMonitorLeader
+
+/**
+  * subscribe to member updates
+  */
+case object ZkMonitorMember
+/**
+  * stop subscription to a member's updates
+  */
+case object ZkStopMonitorMember
+
+/**
  * Lifecycle events corresponding to CONNECTED, RECONNECTED, SUSPENDED, LOST state in Curator Framework
  */
 case object ZkConnected
